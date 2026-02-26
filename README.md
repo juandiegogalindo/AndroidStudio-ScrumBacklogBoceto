@@ -72,25 +72,7 @@ Funcionalidad:
 
 ---
 
-## 6. Estructura del Proyecto
-app/
-├── java/co.edu.unipiloto.scrumbacklog/
-│ ├── MainActivity.java
-│ ├── ConsultaActivity.java
-│ ├── InventarioActivity.java
-│ └── SalidasActivity.java
-│
-├── res/
-│ ├── layout/
-│ │ ├── activity_main.xml
-│ │ ├── activity_consulta.xml
-│ │ ├── activity_inventario.xml
-│ │ └── activity_salidas.xml
-│ └── values/
-
----
-
-## 7. Alcance del Proyecto
+## 6. Alcance del Proyecto
 
 Este proyecto representa una implementación básica de la capa de presentación.  
 
@@ -106,7 +88,7 @@ Su finalidad es académica y de aprendizaje del entorno Android.
 
 ---
 
-## 8. Instalación y Ejecución
+## 7. Instalación y Ejecución
 
 1. Clonar repositorio: https://github.com/juandiegogalindo/AndroidStudio-ActividadScrum.git
 2. Abrir en Android Studio.
@@ -115,7 +97,7 @@ Su finalidad es académica y de aprendizaje del entorno Android.
 
 ---
 
-## 9. Autores
+## 8. Autores
 1. Juan Pablo Coronado
 2. Juan Diego Galindo
 3. Sofia Torres Paez
