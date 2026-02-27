@@ -97,6 +97,25 @@ Su finalidad es académica y de aprendizaje del entorno Android.
 
 ---
 
+## 8. Imagenes de Referencia.
+1. Pagina Principal
+
+<img width="390" height="255" alt="image" src="https://github.com/user-attachments/assets/0788faef-176b-4707-b860-fec857f5acc2" />
+
+2. Consulta Precio
+
+<img width="390" height="463" alt="image" src="https://github.com/user-attachments/assets/06b9ea22-a372-4bc1-8890-84f9e9ec4423" />
+  
+3. Manejo Inventario.
+
+<img width="393" height="455" alt="image" src="https://github.com/user-attachments/assets/097ece11-c84c-4c11-9906-4f6bccb50fe9" />
+
+4. Manejo salidas
+
+<img width="393" height="484" alt="image" src="https://github.com/user-attachments/assets/ca5b2b95-a7ab-47d4-bdad-8cfd87a98386" />
+
+---
+
 ## 8. Autores
 1. Juan Pablo Coronado
 2. Juan Diego Galindo
