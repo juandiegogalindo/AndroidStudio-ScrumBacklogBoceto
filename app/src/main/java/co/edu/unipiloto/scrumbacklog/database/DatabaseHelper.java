@@ -1,6 +1,5 @@
 package co.edu.unipiloto.scrumbacklog.database;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "combustible.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -21,219 +20,267 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String tablaCombustibles = "CREATE TABLE combustibles (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "tipo TEXT," +
+        // TABLA COMBUSTIBLE
+        db.execSQL("CREATE TABLE combustible (" +
+                "id_combustible INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "nombre TEXT UNIQUE)");
+
+        // TABLA UBICACION
+        db.execSQL("CREATE TABLE ubicacion (" +
+                "id_ubicacion INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "ciudad TEXT," +
+                "zona TEXT)");
+
+        // TABLA PRECIOS
+        db.execSQL("CREATE TABLE precio_combustible (" +
+                "id_precio INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "id_combustible INTEGER," +
+                "id_ubicacion INTEGER," +
                 "precio REAL," +
-                "inventario REAL)";
+                "FOREIGN KEY(id_combustible) REFERENCES combustible(id_combustible)," +
+                "FOREIGN KEY(id_ubicacion) REFERENCES ubicacion(id_ubicacion))");
 
-        String tablaMovimientos = "CREATE TABLE movimientos (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "tipoMovimiento TEXT," +
-                "tipoCombustible TEXT," +
+        // TABLA INVENTARIO
+        db.execSQL("CREATE TABLE inventario (" +
+                "id_inventario INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "id_combustible INTEGER," +
+                "cantidad REAL," +
+                "FOREIGN KEY(id_combustible) REFERENCES combustible(id_combustible))");
+
+        // TABLA MOVIMIENTOS
+        db.execSQL("CREATE TABLE movimientos (" +
+                "id_movimiento INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "id_combustible INTEGER," +
+                "tipo_movimiento TEXT," +
                 "galones REAL," +
-                "precioUnitario REAL," +
+                "precio_unitario REAL," +
                 "total REAL," +
-                "fecha TEXT)";
+                "fecha TEXT," +
+                "FOREIGN KEY(id_combustible) REFERENCES combustible(id_combustible))");
 
-        db.execSQL(tablaCombustibles);
-        db.execSQL(tablaMovimientos);
-
-        db.execSQL("INSERT INTO combustibles (tipo, precio, inventario) VALUES ('Corriente',15991,10000)");
-        db.execSQL("INSERT INTO combustibles (tipo, precio, inventario) VALUES ('Extra',22673,8000)");
-        db.execSQL("INSERT INTO combustibles (tipo, precio, inventario) VALUES ('Diesel',13276,7500)");
+        insertarDatosIniciales(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS combustibles");
+
         db.execSQL("DROP TABLE IF EXISTS movimientos");
+        db.execSQL("DROP TABLE IF EXISTS inventario");
+        db.execSQL("DROP TABLE IF EXISTS precio_combustible");
+        db.execSQL("DROP TABLE IF EXISTS ubicacion");
+        db.execSQL("DROP TABLE IF EXISTS combustible");
+
         onCreate(db);
     }
 
-    //Metodo para implementar una salida
-    public boolean registrarSalida(String tipoCombustible,
-                                   double galones,
-                                   double precioUnitario,
-                                   String fecha) {
+    private void insertarDatosIniciales(SQLiteDatabase db) {
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        // COMBUSTIBLES
+        db.execSQL("INSERT INTO combustible (nombre) VALUES ('Corriente')");
+        db.execSQL("INSERT INTO combustible (nombre) VALUES ('Extra')");
+        db.execSQL("INSERT INTO combustible (nombre) VALUES ('Diesel')");
 
-        double total = galones * precioUnitario;
+        // UBICACIONES
+        db.execSQL("INSERT INTO ubicacion (ciudad,zona) VALUES ('Bogota','Suba')");
+        db.execSQL("INSERT INTO ubicacion (ciudad,zona) VALUES ('Bogota','Engativa')");
+        db.execSQL("INSERT INTO ubicacion (ciudad,zona) VALUES ('Bogota','Centro')");
 
-        ContentValues values = new ContentValues();
-        values.put("tipoMovimiento", "SALIDA");
-        values.put("tipoCombustible", tipoCombustible);
-        values.put("galones", galones);
-        values.put("precioUnitario", precioUnitario);
-        values.put("total", total);
-        values.put("fecha", fecha);
+        // INVENTARIO INICIAL
+        db.execSQL("INSERT INTO inventario (id_combustible,cantidad) VALUES (1,10000)");
+        db.execSQL("INSERT INTO inventario (id_combustible,cantidad) VALUES (2,8000)");
+        db.execSQL("INSERT INTO inventario (id_combustible,cantidad) VALUES (3,7500)");
 
-        long resultado = db.insert("movimientos", null, values);
+        // PRECIOS POR ZONA
+        db.execSQL("INSERT INTO precio_combustible VALUES (NULL,1,1,16000)");
+        db.execSQL("INSERT INTO precio_combustible VALUES (NULL,2,1,22700)");
+        db.execSQL("INSERT INTO precio_combustible VALUES (NULL,3,1,13200)");
 
-        if (resultado != -1) {
-            descontarInventario(tipoCombustible, galones);
-            return true;
-        }
+        db.execSQL("INSERT INTO precio_combustible VALUES (NULL,1,2,15900)");
+        db.execSQL("INSERT INTO precio_combustible VALUES (NULL,2,2,22600)");
+        db.execSQL("INSERT INTO precio_combustible VALUES (NULL,3,2,13100)");
 
-        return false;
+        db.execSQL("INSERT INTO precio_combustible VALUES (NULL,1,3,15800)");
+        db.execSQL("INSERT INTO precio_combustible VALUES (NULL,2,3,22500)");
+        db.execSQL("INSERT INTO precio_combustible VALUES (NULL,3,3,13000)");
     }
 
-    // Descontar Inventario
-    public void descontarInventario(String tipoCombustible, double galones) {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        String query = "SELECT inventario FROM combustibles WHERE tipo = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{tipoCombustible});
-
-        if (cursor.moveToFirst()) {
-
-            double inventarioActual = cursor.getDouble(0);
-            double nuevoInventario = inventarioActual - galones;
-
-            ContentValues values = new ContentValues();
-            values.put("inventario", nuevoInventario);
-
-            db.update("combustibles",
-                    values,
-                    "tipo = ?",
-                    new String[]{tipoCombustible});
-        }
-
-        cursor.close();
-    }
-
-    //Metodo ingresar datos
-    public void insertarCombustibleInicial(String tipo, double precio, double inventario) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put("tipo", tipo);
-        values.put("precio", precio);
-        values.put("inventario", inventario);
-
-        db.insert("combustibles", null, values);
-    }
-
-    //Leer inventarios desde la base
-    public double obtenerInventario(String tipoCombustible) {
+    // OBTENER ID COMBUSTIBLE
+    private int obtenerIdCombustible(String nombre){
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        double inventario = 0;
-
         Cursor cursor = db.rawQuery(
-                "SELECT inventario FROM combustibles WHERE tipo = ?",
-                new String[]{tipoCombustible}
-        );
+                "SELECT id_combustible FROM combustible WHERE nombre=?",
+                new String[]{nombre});
 
-        if (cursor.moveToFirst()) {
-            inventario = cursor.getDouble(0);
+        if(cursor.moveToFirst()){
+            int id = cursor.getInt(0);
+            cursor.close();
+            return id;
         }
 
         cursor.close();
-        return inventario;
+        return -1;
     }
 
-    // REGISTRAR ENTRADAS
-    public boolean registrarEntrada(String tipoCombustible,
-                                    double galones,
-                                    double precioUnitario,
-                                    String fecha) {
+    // OBTENER PRECIO GENERAL (usado por historias antiguas)
+
+    public double obtenerPrecio(String tipo){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT precio FROM precio_combustible pc " +
+                        "JOIN combustible c ON pc.id_combustible=c.id_combustible " +
+                        "WHERE c.nombre=? LIMIT 1",
+                new String[]{tipo});
+
+        if(cursor.moveToFirst()){
+            double precio = cursor.getDouble(0);
+            cursor.close();
+            return precio;
+        }
+
+        cursor.close();
+        return 0;
+    }
+
+    // OBTENER PRECIO POR CIUDAD Y ZONA
+
+    public double obtenerPrecioZona(String tipo,String ciudad,String zona){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT precio FROM precio_combustible pc " +
+                        "JOIN combustible c ON pc.id_combustible=c.id_combustible " +
+                        "JOIN ubicacion u ON pc.id_ubicacion=u.id_ubicacion " +
+                        "WHERE c.nombre=? AND u.ciudad=? AND u.zona=?",
+                new String[]{tipo,ciudad,zona});
+
+        if(cursor.moveToFirst()){
+            double precio = cursor.getDouble(0);
+            cursor.close();
+            return precio;
+        }
+
+        cursor.close();
+        return 0;
+    }
+
+    // OBTENER INVENTARIO
+
+    public double obtenerInventario(String tipo){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT cantidad FROM inventario i " +
+                        "JOIN combustible c ON i.id_combustible=c.id_combustible " +
+                        "WHERE c.nombre=?",
+                new String[]{tipo});
+
+        if(cursor.moveToFirst()){
+            double inv = cursor.getDouble(0);
+            cursor.close();
+            return inv;
+        }
+
+        cursor.close();
+        return 0;
+    }
+
+    // REGISTRAR ENTRADA
+
+    public boolean registrarEntrada(String tipo,double galones,double precio,String fecha){
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        double total = galones * precioUnitario;
+        int idComb = obtenerIdCombustible(tipo);
+
+        double total = galones * precio;
 
         ContentValues values = new ContentValues();
-        values.put("tipoMovimiento", "ENTRADA");
-        values.put("tipoCombustible", tipoCombustible);
-        values.put("galones", galones);
-        values.put("precioUnitario", precioUnitario);
-        values.put("total", total);
-        values.put("fecha", fecha);
+        values.put("id_combustible",idComb);
+        values.put("tipo_movimiento","ENTRADA");
+        values.put("galones",galones);
+        values.put("precio_unitario",precio);
+        values.put("total",total);
+        values.put("fecha",fecha);
 
-        long resultado = db.insert("movimientos", null, values);
+        long res = db.insert("movimientos",null,values);
 
-        if (resultado != -1) {
+        if(res!=-1){
 
-            // SUMAR INVENTARIO
-            Cursor cursor = db.rawQuery(
-                    "SELECT inventario FROM combustibles WHERE tipo = ?",
-                    new String[]{tipoCombustible}
-            );
+            db.execSQL(
+                    "UPDATE inventario SET cantidad=cantidad+? WHERE id_combustible=?",
+                    new Object[]{galones,idComb});
 
-            if (cursor.moveToFirst()) {
-                double inventarioActual = cursor.getDouble(0);
-                double nuevoInventario = inventarioActual + galones;
-
-                ContentValues updateValues = new ContentValues();
-                updateValues.put("inventario", nuevoInventario);
-
-                db.update(
-                        "combustibles",
-                        updateValues,
-                        "tipo = ?",
-                        new String[]{tipoCombustible}
-                );
-            }
-
-            cursor.close();
             return true;
         }
 
         return false;
     }
 
-    //Movimientos
-    public ArrayList<String> obtenerMovimientos() {
+    // REGISTRAR SALIDA
+
+    public boolean registrarSalida(String tipo,double galones,double precio,String fecha){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        int idComb = obtenerIdCombustible(tipo);
+
+        double total = galones * precio;
+
+        ContentValues values = new ContentValues();
+        values.put("id_combustible",idComb);
+        values.put("tipo_movimiento","SALIDA");
+        values.put("galones",galones);
+        values.put("precio_unitario",precio);
+        values.put("total",total);
+        values.put("fecha",fecha);
+
+        long res = db.insert("movimientos",null,values);
+
+        if(res!=-1){
+
+            db.execSQL(
+                    "UPDATE inventario SET cantidad=cantidad-? WHERE id_combustible=?",
+                    new Object[]{galones,idComb});
+
+            return true;
+        }
+
+        return false;
+    }
+
+    // HISTORIAL MOVIMIENTOS
+
+    public ArrayList<String> obtenerMovimientos(){
 
         ArrayList<String> lista = new ArrayList<>();
+
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(
-                "SELECT tipoMovimiento, tipoCombustible, galones, total, fecha FROM movimientos ORDER BY id DESC",
-                null
-        );
+                "SELECT m.tipo_movimiento,c.nombre,m.galones,m.total,m.fecha " +
+                        "FROM movimientos m " +
+                        "JOIN combustible c ON m.id_combustible=c.id_combustible " +
+                        "ORDER BY m.id_movimiento DESC",
+                null);
 
-        while (cursor.moveToNext()) {
+        while(cursor.moveToNext()){
 
-            String tipoMov = cursor.getString(0);
-            String tipoComb = cursor.getString(1);
+            String mov = cursor.getString(0);
+            String comb = cursor.getString(1);
             double gal = cursor.getDouble(2);
             double total = cursor.getDouble(3);
             String fecha = cursor.getString(4);
 
-            String registro = fecha +
-                    " | " + tipoMov +
-                    " | " + tipoComb +
-                    " | " + gal + " gal" +
-                    " | $" + total;
-
-            lista.add(registro);
+            lista.add(fecha+" | "+mov+" | "+comb+" | "+gal+" gal | $"+total);
         }
 
         cursor.close();
         return lista;
-    }
-
-    //Obtener precio
-    public double obtenerPrecio(String tipoCombustible) {
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        double precio = 0;
-
-        Cursor cursor = db.rawQuery(
-                "SELECT precio FROM combustibles WHERE tipo = ?",
-                new String[]{tipoCombustible}
-        );
-
-        if (cursor.moveToFirst()) {
-            precio = cursor.getDouble(0);
-        }
-
-        cursor.close();
-        return precio;
     }
 }

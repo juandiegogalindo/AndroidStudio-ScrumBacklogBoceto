@@ -11,28 +11,35 @@
         android:id="@+id/btnConsulta"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Consulta Precio"
+            android:text="Consulta Activity"
         android:layout_marginBottom="16dp"/>
 
     <Button
         android:id="@+id/btnInventario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Manejo Inventario"
+        android:text="Inventario Activity"
         android:layout_marginBottom="16dp"/>
 
     <Button
         android:id="@+id/btnSalidas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Manejo Salidas"
+        android:text="Salidas Activity"
         android:layout_marginBottom="16dp"/>
 
     <Button
         android:id="@+id/btnNotificador"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Alertas Inventario"
+        android:text="Notificador Activity"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnRegulador"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Regulador Precios Activity"
         android:layout_marginBottom="16dp"/>
 
 </LinearLayout>
