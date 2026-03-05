@@ -7,7 +7,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    Button btnConsulta, btnInventario, btnSalidas, btnNotificador, btnRegulador;
+    Button btnConsulta, btnInventario, btnSalidas, btnNotificador, btnRegulador, btnControl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         btnSalidas = findViewById(R.id.btnSalidas);
         btnNotificador = findViewById(R.id.btnNotificador);
         btnRegulador = findViewById(R.id.btnRegulador);
-
+        btnControl = findViewById(R.id.btnControl);
 
         btnConsulta.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +57,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ReguladorPreciosActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnControl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ControlInventarioActivity.class);
                 startActivity(intent);
             }
         });

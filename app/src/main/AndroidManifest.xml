@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScrumBacklog">
         <activity
+            android:name=".ControlInventarioActivity"
+            android:exported="false" />
+        <activity
             android:name=".ReguladorPreciosActivity"
             android:exported="false" />
         <activity
