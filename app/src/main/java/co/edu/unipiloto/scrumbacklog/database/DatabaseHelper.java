@@ -1,4 +1,4 @@
-package co.edu.unipiloto.scrumbacklog;
+package co.edu.unipiloto.scrumbacklog.database;
 
 
 import android.content.ContentValues;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "combustible.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -39,9 +39,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(tablaCombustibles);
         db.execSQL(tablaMovimientos);
 
-        db.execSQL("INSERT INTO combustibles (tipo, precio, inventario) VALUES ('Corriente',15000,1000)");
-        db.execSQL("INSERT INTO combustibles (tipo, precio, inventario) VALUES ('Extra',18000,800)");
-        db.execSQL("INSERT INTO combustibles (tipo, precio, inventario) VALUES ('Diesel',14000,1200)");
+        db.execSQL("INSERT INTO combustibles (tipo, precio, inventario) VALUES ('Corriente',15991,10000)");
+        db.execSQL("INSERT INTO combustibles (tipo, precio, inventario) VALUES ('Extra',22673,8000)");
+        db.execSQL("INSERT INTO combustibles (tipo, precio, inventario) VALUES ('Diesel',13276,7500)");
     }
 
     @Override

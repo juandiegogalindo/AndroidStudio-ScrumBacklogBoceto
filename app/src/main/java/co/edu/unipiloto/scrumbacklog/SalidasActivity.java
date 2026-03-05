@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import co.edu.unipiloto.scrumbacklog.database.DatabaseHelper;
+
 public class SalidasActivity extends AppCompatActivity {
 
     TextView txtInventarioDisponible;

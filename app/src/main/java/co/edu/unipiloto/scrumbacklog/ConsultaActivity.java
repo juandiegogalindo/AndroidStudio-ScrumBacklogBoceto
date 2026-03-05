@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
+import co.edu.unipiloto.scrumbacklog.database.DatabaseHelper;
+
 public class ConsultaActivity extends AppCompatActivity {
 
     Spinner spTipoCombustible;

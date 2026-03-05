@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import co.edu.unipiloto.scrumbacklog.database.DatabaseHelper;
+
 public class InventarioActivity extends AppCompatActivity {
 
     Spinner spCombustible;
