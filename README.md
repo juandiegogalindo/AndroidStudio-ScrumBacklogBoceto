@@ -105,12 +105,8 @@ Su finalidad es académica y de aprendizaje del entorno Android.
 1. Clonar repositorio: https://github.com/juandiegogalindo/AndroidStudio-ActividadScrum.git
 2. Abrir en Android Studio.
 3. Sincronizar Gradle.
-4. Ejecutar en emulador o dispositivo físico.
+4. Ejecutar en emulador 
 
----
-
-## 8. Imagenes de Referencia.
-1. Pagina Principa
 ---
 
 ## 8. Autores
