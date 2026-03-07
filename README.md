@@ -120,9 +120,6 @@ Su finalidad es académica y de aprendizaje del entorno Android.
   
 3. Manejo Inventario.
 
-<img width="393" height="455" alt="image" src="https://github.com/user-attachments/assets/097ece11-c84c-4c11-9906-4f6bccb50fe9" />
-
-4. Manejo salidas
 ---
 
 ## 8. Autores
