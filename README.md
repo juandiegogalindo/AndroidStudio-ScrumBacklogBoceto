@@ -108,7 +108,3 @@ Su finalidad es académica y de aprendizaje del entorno Android.
 4. Ejecutar en emulador 
 
 ---
-
-## 8. Autor
-1. Juan Diego Galindo
----
